@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Expense Tracker Icon</title>
+  <desc id="desc">A receipt with spending bars and a calculator.</desc>
+  <rect width="512" height="512" rx="96" fill="#edf6fb"/>
+  <path d="M88 58h230c40 0 72 32 72 72v324H88z" fill="#dce8ef"/>
+  <path d="M294 58h24c40 0 72 32 72 72v324h-96z" fill="#c8d2d9"/>
+  <path d="M88 420h240v34c0 0-4 32-44 32H88c-38 0-62-26-62-58v-8z" fill="#a8b8dc"/>
+  <path d="M318 58c0-28 22-52 52-52s52 24 52 52v162H318z" fill="#a9b8df"/>
+  <circle cx="147" cy="118" r="66" fill="#ffcc1a"/>
+  <path d="M147 78v80m-26-54h39c11 0 20 8 20 18s-9 18-20 18h-27c-10 0-18 8-18 18s8 18 18 18h40" fill="none" stroke="#ff8d24" stroke-width="12" stroke-linecap="round"/>
+  <rect x="74" y="207" width="104" height="10" rx="5" fill="#45494d"/>
+  <rect x="74" y="243" width="76" height="10" rx="5" fill="#45494d"/>
+  <path d="M83 341h38v49H83z" fill="#f34c46"/>
+  <path d="M134 291h38v99h-38z" fill="#f34c46"/>
+  <path d="M188 317h38v73h-38z" fill="#f34c46"/>
+  <path d="M242 256h38v134h-38z" fill="#f34c46"/>
+  <path d="M83 380c20-2 34-14 38-39v49H83zM134 383c20-3 34-17 38-42v49h-38zM188 381c22-4 35-19 38-45v54h-38zM242 381c22-5 35-21 38-51v60h-38z" fill="#cf4648" opacity=".5"/>
+  <rect x="306" y="245" width="181" height="261" rx="28" fill="#4159a1"/>
+  <rect x="332" y="271" width="129" height="64" rx="7" fill="#afbee1"/>
+  <path d="M443 292v23" stroke="#4a4a4a" stroke-width="12" stroke-linecap="round"/>
+  <rect x="332" y="356" width="37" height="31" rx="9" fill="#ff9226"/>
+  <rect x="386" y="356" width="37" height="31" rx="9" fill="#e8f6ff"/>
+  <rect x="441" y="356" width="37" height="31" rx="9" fill="#e8f6ff"/>
+  <rect x="332" y="402" width="37" height="31" rx="9" fill="#e8f6ff"/>
+  <rect x="386" y="402" width="37" height="31" rx="9" fill="#e8f6ff"/>
+  <rect x="441" y="402" width="37" height="76" rx="11" fill="#ffcf1a"/>
+  <rect x="332" y="448" width="37" height="31" rx="9" fill="#e8f6ff"/>
+  <rect x="386" y="448" width="37" height="31" rx="9" fill="#e8f6ff"/>
+</svg>

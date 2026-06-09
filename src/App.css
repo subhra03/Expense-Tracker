@@ -1,7 +1,33 @@
+.app-header {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  text-align: left;
+}
+
+.app-header-icon {
+  flex: 0 0 auto;
+  height: 72px;
+  width: 72px;
+}
+
+.app-eyebrow {
+  color: #495057;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
 .budget-card {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border: none;
-  border-radius: 15px;
+  border-radius: 8px;
+}
+
+.budget-input {
+  max-width: 220px;
 }
 
 .category-badge {
@@ -16,15 +42,89 @@
 }
 
 .progress {
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
 .card {
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid rgba(0,0,0,0.1);
 }
 
 .chart-container {
+  height: 300px;
   min-height: 300px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(150px, 200px) minmax(110px, 140px);
+  gap: 0.75rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.summary-card .card-body {
+  min-height: 118px;
+}
+
+.summary-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.empty-state {
+  align-items: center;
+  background: #f8f9fa;
+  border: 1px dashed #adb5bd;
+  border-radius: 8px;
+  color: #6c757d;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  min-height: 220px;
+  text-align: center;
+}
+
+.category-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.category-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+@media (max-width: 767px) {
+  .app-header {
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .app-header-icon {
+    height: 58px;
+    width: 58px;
+  }
+
+  .budget-input,
+  .filter-grid {
+    max-width: none;
+    width: 100%;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-row {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+  }
 }
