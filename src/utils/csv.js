@@ -1,10 +1,12 @@
 import { isValidISODate, parsePositiveNumber } from './validation';
+import { createId } from './id';
 
 const csvEscape = (value) => {
   const stringValue = String(value ?? '');
-  return /[",\n\r]/.test(stringValue)
-    ? `"${stringValue.replace(/"/g, '""')}"`
-    : stringValue;
+  const safeValue = /^[=+\-@]/.test(stringValue) ? `'${stringValue}` : stringValue;
+  return /[",\n\r]/.test(safeValue)
+    ? `"${safeValue.replace(/"/g, '""')}"`
+    : safeValue;
 };
 
 const parseCsvLine = (line) => {
@@ -74,10 +76,9 @@ export const parseExpensesCsv = (text, categories) => {
   }
 
   let skipped = 0;
-  const baseId = Date.now();
   const expenses = [];
 
-  dataLines.forEach((line, index) => {
+  dataLines.forEach(line => {
     const values = parseCsvLine(line);
     const title = values[titleIndex]?.trim();
     const amount = parsePositiveNumber(values[amountIndex]);
@@ -90,7 +91,7 @@ export const parseExpensesCsv = (text, categories) => {
     }
 
     expenses.push({
-      id: baseId + index,
+      id: createId(),
       title,
       amount,
       date,

@@ -1,9 +1,17 @@
+.container {
+  max-width: 1180px;
+}
+
 .app-header {
   align-items: center;
   display: flex;
   gap: 1rem;
   justify-content: center;
   text-align: left;
+}
+
+.app-header > div {
+  min-width: 0;
 }
 
 .app-header-icon {
@@ -20,6 +28,14 @@
   text-transform: uppercase;
 }
 
+.app-header h1 {
+  line-height: 1.05;
+}
+
+.app-header .text-muted {
+  max-width: 720px;
+}
+
 .budget-card {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border: none;
@@ -28,6 +44,16 @@
 
 .budget-input {
   max-width: 220px;
+}
+
+.budget-meter-summary {
+  align-items: center;
+  color: #212529;
+  display: flex;
+  font-weight: 600;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
 
 .category-badge {
@@ -54,6 +80,10 @@
 .chart-container {
   height: 300px;
   min-height: 300px;
+}
+
+.chart-card .card-body {
+  min-height: 380px;
 }
 
 .filter-grid {
@@ -103,10 +133,57 @@
   gap: 0.5rem;
 }
 
-@media (max-width: 767px) {
+.table-responsive .table {
+  min-width: 620px;
+}
+
+.btn svg {
+  vertical-align: -0.125em;
+}
+
+@media (min-width: 1200px) {
+  .chart-container {
+    height: 330px;
+    min-height: 330px;
+  }
+
+  .chart-card .card-body {
+    min-height: 410px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .app-header {
+    justify-content: flex-start;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chart-container {
+    height: 280px;
+    min-height: 280px;
+  }
+
+  .chart-card .card-body {
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .app-header {
     align-items: center;
     justify-content: flex-start;
+  }
+
+  .app-header h1 {
+    font-size: 2.1rem;
   }
 
   .app-header-icon {
@@ -124,7 +201,159 @@
     grid-template-columns: 1fr;
   }
 
+  .budget-meter-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .chart-container {
+    height: 260px;
+    min-height: 260px;
+  }
+
+  .chart-card .card-body {
+    min-height: 330px;
+  }
+
   .category-row {
-    grid-template-columns: 56px minmax(0, 1fr) auto;
+    grid-template-columns: 56px minmax(0, 1fr) 44px;
+  }
+
+  .category-row .btn {
+    padding-left: 0;
+    padding-right: 0;
+    width: 44px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 1rem !important;
+  }
+
+  .app-header {
+    gap: 0.75rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .app-header .text-muted {
+    font-size: 0.92rem;
+  }
+
+  .app-header-icon {
+    height: 50px;
+    width: 50px;
+  }
+
+  .app-eyebrow {
+    font-size: 0.7rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card .card-body {
+    min-height: auto;
+  }
+
+  .summary-value {
+    font-size: 1.15rem;
+  }
+
+  .chart-container {
+    height: 240px;
+    min-height: 240px;
+  }
+
+  .chart-card .card-body {
+    min-height: 310px;
+  }
+
+  .table-responsive .table {
+    font-size: 0.925rem;
+    min-width: 540px;
+  }
+
+  .empty-state {
+    min-height: 180px;
+  }
+
+  .category-row {
+    grid-template-columns: 48px minmax(0, 1fr) 42px;
+  }
+
+  .category-row .form-control-color {
+    height: 38px;
+    width: 48px;
+  }
+
+  .category-row .btn {
+    width: 42px;
+  }
+
+  .Toastify__toast-container {
+    bottom: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    width: calc(100vw - 1rem);
+  }
+}
+
+@media (max-width: 375px) {
+  .app-header {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .app-header h1 {
+    font-size: 1.55rem;
+  }
+
+  .app-header-icon {
+    height: 46px;
+    width: 46px;
+  }
+
+  .budget-meter-summary {
+    font-size: 0.85rem;
+  }
+
+  .chart-container {
+    height: 220px;
+    min-height: 220px;
+  }
+
+  .chart-card .card-body {
+    min-height: 290px;
+  }
+
+  .table-responsive .table {
+    min-width: 500px;
+  }
+
+  .category-row {
+    grid-template-columns: 44px minmax(0, 1fr) 40px;
+  }
+
+  .category-row .form-control-color {
+    width: 44px;
+  }
+
+  .category-row .btn {
+    width: 40px;
   }
 }

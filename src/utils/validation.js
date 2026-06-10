@@ -9,6 +9,11 @@ export const parsePositiveNumber = (value) => {
   return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : null;
 };
 
+export const isValidId = (value) => (
+  (typeof value === 'string' && value.trim() !== '') ||
+  (typeof value === 'number' && Number.isFinite(value))
+);
+
 export const isValidISODate = (value) => {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return false;
@@ -54,14 +59,14 @@ export const sanitizeExpenses = (value, categories) => {
   const expenses = [];
 
   value.forEach(expense => {
-    const id = Number(expense?.id);
+    const id = expense?.id;
     const title = typeof expense?.title === 'string' ? expense.title.trim() : '';
     const amount = parsePositiveNumber(expense?.amount);
     const date = typeof expense?.date === 'string' ? expense.date : '';
     const categoryId = Number(expense?.categoryId);
 
     if (
-      !Number.isFinite(id) ||
+      !isValidId(id) ||
       !title ||
       amount === null ||
       !isValidISODate(date) ||

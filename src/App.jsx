@@ -13,8 +13,9 @@ import Filters from './components/Filters';
 import SummaryCards from './components/SummaryCards';
 import { expensesToCsv, parseExpensesCsv } from './utils/csv';
 import { getCategoryMap, getPeriodExpenses, getSummary, getYearOptions } from './utils/expenseUtils';
+import { createId } from './utils/id';
 import { createInitialState, persistState } from './utils/storage';
-import { parsePositiveNumber } from './utils/validation';
+import { isValidISODate, parsePositiveNumber } from './utils/validation';
 import './App.css';
 
 const emptyForm = {
@@ -137,9 +138,24 @@ const App = () => {
     setEditingId(null);
   }, []);
 
+  const focusExpensePeriod = useCallback((expense) => {
+    const expenseDate = parseISO(expense.date);
+    setSelectedYear(String(expenseDate.getFullYear()));
+    setSelectedMonth(String(expenseDate.getMonth()));
+    setSearchTerm('');
+  }, []);
+
   const buildExpenseFromForm = useCallback(() => {
-    if (!form.title || !form.amount || !form.date || !form.categoryId) {
+    const title = form.title.trim();
+    const categoryId = Number(form.categoryId);
+
+    if (!title || !form.amount || !form.date || !form.categoryId) {
       toast.error('Please fill all fields.');
+      return null;
+    }
+
+    if (!isValidISODate(form.date)) {
+      toast.error('Please choose a valid date.');
       return null;
     }
 
@@ -149,14 +165,19 @@ const App = () => {
       return null;
     }
 
+    if (!categoryById.has(categoryId)) {
+      toast.error('Please choose a valid category.');
+      return null;
+    }
+
     return {
-      id: editingId || Date.now(),
-      title: form.title.trim(),
+      id: editingId || createId(),
+      title,
       amount,
       date: format(parseISO(form.date), 'yyyy-MM-dd'),
-      categoryId: Number(form.categoryId),
+      categoryId,
     };
-  }, [editingId, form]);
+  }, [categoryById, editingId, form]);
 
   const saveExpense = useCallback((event) => {
     event.preventDefault();
@@ -168,8 +189,9 @@ const App = () => {
 
     dispatch({ type: editingId ? 'UPDATE_EXPENSE' : 'ADD_EXPENSE', payload: expense });
     toast.success(editingId ? 'Expense updated successfully.' : 'Expense added successfully.');
+    focusExpensePeriod(expense);
     resetForm();
-  }, [buildExpenseFromForm, editingId, resetForm]);
+  }, [buildExpenseFromForm, editingId, focusExpensePeriod, resetForm]);
 
   const startEditing = useCallback((expense) => {
     setEditingId(expense.id);
@@ -207,9 +229,15 @@ const App = () => {
   }, [budgetInput, state.budget]);
 
   const addCategory = useCallback(({ name, color }) => {
+    const trimmedName = name.trim();
     const duplicate = state.categories.some(
-      category => category.name.toLowerCase() === name.toLowerCase()
+      category => category.name.toLowerCase() === trimmedName.toLowerCase()
     );
+
+    if (!trimmedName) {
+      toast.error('Enter a category name.');
+      return;
+    }
 
     if (duplicate) {
       toast.error('Category already exists.');
@@ -217,13 +245,32 @@ const App = () => {
     }
 
     const nextId = Math.max(...state.categories.map(category => category.id), 0) + 1;
-    dispatch({ type: 'ADD_CATEGORY', payload: { id: nextId, name, color } });
+    dispatch({ type: 'ADD_CATEGORY', payload: { id: nextId, name: trimmedName, color } });
     toast.success('Category added.');
   }, [state.categories]);
 
   const updateCategory = useCallback((id, updates) => {
-    dispatch({ type: 'UPDATE_CATEGORY', payload: { id, updates } });
-  }, []);
+    const safeUpdates = { ...updates };
+
+    if (safeUpdates.name !== undefined) {
+      const trimmedName = safeUpdates.name.trim();
+      const duplicate = state.categories.some(category => (
+        category.id !== id && category.name.toLowerCase() === trimmedName.toLowerCase()
+      ));
+
+      if (!trimmedName || duplicate) {
+        return;
+      }
+
+      safeUpdates.name = trimmedName;
+    }
+
+    if (safeUpdates.color !== undefined && !/^#[0-9a-fA-F]{6}$/.test(safeUpdates.color)) {
+      return;
+    }
+
+    dispatch({ type: 'UPDATE_CATEGORY', payload: { id, updates: safeUpdates } });
+  }, [state.categories]);
 
   const deleteCategory = useCallback((id) => {
     const isUsed = state.expenses.some(expense => expense.categoryId === id);
@@ -256,10 +303,11 @@ const App = () => {
     }
 
     dispatch({ type: 'ADD_EXPENSES', payload: result.expenses });
+    focusExpensePeriod(result.expenses[0]);
     toast.success(
       `Imported ${result.expenses.length} expenses${result.skipped ? `, skipped ${result.skipped}` : ''}.`
     );
-  }, [state.categories]);
+  }, [focusExpensePeriod, state.categories]);
 
   return (
     <div className="container py-4">
@@ -306,9 +354,9 @@ const App = () => {
 
       <DataTools onExport={exportCsv} onImport={importCsv} />
 
-      <div className="row mb-4">
+      <div className="row g-3 mb-4 chart-row">
         <div className="col-md-8">
-          <div className="card shadow-sm h-100">
+          <div className="card chart-card shadow-sm h-100">
             <div className="card-body">
               <h3 className="card-title fs-5 mb-3">Daily Spending Analysis</h3>
               <div className="chart-container">
@@ -323,7 +371,7 @@ const App = () => {
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card shadow-sm h-100">
+          <div className="card chart-card shadow-sm h-100">
             <div className="card-body">
               <h3 className="card-title fs-5 mb-3">Category Distribution</h3>
               <div className="chart-container">

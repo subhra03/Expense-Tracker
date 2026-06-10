@@ -28,16 +28,21 @@ const BudgetCard = memo(({
           />
         </div>
       </div>
-      <div className="progress mt-3" style={{ height: '25px' }}>
-        <div
-          className={`progress-bar ${budgetUsage >= 100 ? 'bg-danger' : 'bg-success'}`}
-          role="progressbar"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-valuenow={Math.round(budgetUsage)}
-          style={{ width: `${budgetUsage}%` }}
-        >
-          Spent: {formatCurrency(totalSpent)} / {formatCurrency(budget)}
+      <div className="budget-meter mt-3">
+        <div className="budget-meter-summary">
+          <span>Spent: {formatCurrency(totalSpent)} / {formatCurrency(budget)}</span>
+          <span>{Math.round(budgetUsage)}% used</span>
+        </div>
+        <div className="progress" style={{ height: '25px' }}>
+          <div
+            className={`progress-bar ${budgetUsage >= 100 ? 'bg-danger' : 'bg-success'}`}
+            role="progressbar"
+            aria-label="Budget used"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={Math.round(budgetUsage)}
+            style={{ width: `${budgetUsage}%` }}
+          />
         </div>
       </div>
     </div>

@@ -57,7 +57,7 @@ test('loads valid expenses, categories, and budget from localStorage', () => {
   ]));
   localStorage.setItem('expenses', JSON.stringify([
     {
-      id: 1,
+      id: 'saved-expense',
       title: 'Saved medicine',
       amount: 250,
       date: defaultDate,
@@ -99,9 +99,11 @@ test('adds an expense and updates monthly summary and daily chart', () => {
 test('rejects zero and negative expense amounts', () => {
   render(<App />);
 
+  addExpense({ title: '   ', amount: '25' });
   addExpense({ title: 'Free sample', amount: '0' });
   addExpense({ title: 'Invalid charge', amount: '-25' });
 
+  expect(screen.queryByText(/Rs\. 25/)).not.toBeInTheDocument();
   expect(screen.queryByText('Free sample')).not.toBeInTheDocument();
   expect(screen.queryByText('Invalid charge')).not.toBeInTheDocument();
   expect(screen.getByText(/Spent: Rs\. 0 \/ Rs\. 50,000/)).toBeInTheDocument();
@@ -150,7 +152,7 @@ test('rejects invalid budgets and keeps progress math stable', () => {
   expect(budgetInput).toHaveValue(50000);
 });
 
-test('calculates chart data for the selected month and year', () => {
+test('focuses a saved expense period and calculates chart data for it', () => {
   const targetYear = currentYear - 1;
 
   render(<App />);
@@ -161,13 +163,9 @@ test('calculates chart data for the selected month and year', () => {
     date: `${targetYear}-03-12`,
     categoryId: '3',
   });
-  fireEvent.change(screen.getByLabelText(/^year$/i), {
-    target: { value: String(targetYear) },
-  });
-  fireEvent.change(screen.getByLabelText(/^month$/i), {
-    target: { value: '2' },
-  });
 
+  expect(screen.getByLabelText(/^year$/i)).toHaveValue(String(targetYear));
+  expect(screen.getByLabelText(/^month$/i)).toHaveValue('2');
   expect(screen.getAllByText('March rent').length).toBeGreaterThan(0);
   expect(getBarChartData().datasets[0].data[11]).toBe(2222);
 });
@@ -223,16 +221,25 @@ test('adds, edits, and deletes unused categories', () => {
 
   expect(screen.getByRole('option', { name: 'Reading' })).toBeInTheDocument();
 
+  fireEvent.change(screen.getByLabelText(/reading category name/i), {
+    target: { value: 'Food' },
+  });
+
+  expect(screen.getByRole('option', { name: 'Reading' })).toBeInTheDocument();
+
   fireEvent.click(screen.getByRole('button', { name: /delete category reading/i }));
 
   expect(screen.queryByRole('option', { name: 'Reading' })).not.toBeInTheDocument();
 });
 
 test('imports expenses from CSV', async () => {
+  const targetYear = currentYear - 1;
+  const targetDate = `${targetYear}-03-14`;
+
   render(<App />);
 
   const file = new File(
-    [`title,amount,date,category\nImported item,300,${defaultDate},Food`],
+    [`title,amount,date,category\nImported item,300,${targetDate},Food`],
     'expenses.csv',
     { type: 'text/csv' }
   );
@@ -244,6 +251,8 @@ test('imports expenses from CSV', async () => {
   await waitFor(() => {
     expect(screen.getAllByText('Imported item').length).toBeGreaterThan(0);
   });
+  expect(screen.getByLabelText(/^year$/i)).toHaveValue(String(targetYear));
+  expect(screen.getByLabelText(/^month$/i)).toHaveValue('2');
   expect(screen.getByText(/Spent: Rs\. 300 \/ Rs\. 50,000/)).toBeInTheDocument();
 });
 
@@ -254,12 +263,20 @@ test('exports expenses as CSV', async () => {
   vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
 
   render(<App />);
-  addExpense({ title: 'Exported item', amount: '100' });
+  addExpense({ title: '=SUM(1,2)', amount: '100' });
   fireEvent.click(screen.getByRole('button', { name: /export csv/i }));
 
   await waitFor(() => {
     expect(createObjectURL).toHaveBeenCalledTimes(1);
   });
+
+  const csvText = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(createObjectURL.mock.calls[0][0]);
+  });
+  expect(csvText).toContain('"\'=SUM(1,2)"');
   expect(click).toHaveBeenCalledTimes(1);
   expect(revokeObjectURL).toHaveBeenCalledWith('blob:expenses');
 });
